@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>to-do list</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body{
+            min-height: 100vh;
+            justify-content: center;
+            display: flex;
+            align-items: flex-start;
+            padding: 20px;
+            background-color: whitesmoke;
+            box-sizing: border-box;
+        }
+        #main-container{
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            width: 100%;
+            max-width: 450px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 20px;
+        }
+        #hey{
+            color: rgb(94, 43, 94);
+            text-align: left;
+            margin-left: 0;
+            margin-top: 0px;
+            font-size: larger;
+            font-weight: bold;
+            font-family: 'Arial', sans-serif;
+            padding: 0;
+            display: block;
+            width: auto;
+        }
+        #pshow{
+            color: #c0c0c0;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+        #progres{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 15px 20px;
+            box-sizing: border-box;
+            background-color: #e6e6fa;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background-color: rgb(44, 14, 44);
+            border-radius: 15px;
+        }
+        #circular-progress{
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: conic-gradient(rgb(94, 43, 94) 216deg, #502950 0deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+        #search{
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #search-input-wrapper{
+            position: relative;
+            width: 100%;/**/
+            max-width: 350px;
+        }
+        #serc{
+            padding: 10px;
+            padding-right: 45px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        #percentage{
+            position: relative;
+            z-index: 1;
+            color: #5d3587;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+        #circular-progress::before{
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: white;
+            border-radius: 50%;
+        }
+        .fa-solid.fa-plus{
+            color: white;
+        }
+        .fas.fa-search{
+            color: white;
+            width: 35px;
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgb(94, 43, 94);
+            height: 35px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        #add-new{
+            background-color: rgb(44, 14, 44);
+            width: 100%;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+            box-sizing: border-box;
+            padding: 5px;
+        }
+        #newTaskInput{
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s ease;
+            background-color: white;
+            color: #333;
+        }
+        #addTaskBtn{
+            background-color: rgb(94, 43, 94);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            margin-left: 10px;
+            display: flex;
+        }
+        #addTaskBtn:hover{
+            background-color: rgb(70, 30, 70);
+        }
+         #addTaskBtn .fa-solid.fa-plus {
+            color: white; 
+        }
+        #newTaskInput:focus{
+            border-color: rgb(94, 43, 94);
+        }
+        #add-new:hover{
+            background-color: rgb(55, 25, 55);
+        }
+        #add-new .fa-solid.fa-plus{
+            color: #c0c0c0;
+            font-size: 1.5em;
+        }
+        .new-task{
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            background-color: white;
+            display: flex;
+            padding: 12px 15px;
+            border: 1px solid #502950;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            width: 100%;
+            box-sizing: border-box;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 100%;
+            word-break: break-word;
+        }
+        .new-task span{
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+        #main{
+            width: 100%;
+            flex-direction: column;
+            display: flex;
+            gap: 10px;
+        }
+        i{
+            cursor: pointer;
+        }
+        .new-task .fa-check{
+            color: lime;
+            margin-left: 10px;
+            margin-right: 5px;
+            flex-shrink: 0;
+        }
+        .new-task .fa-trash-can {
+            margin-left: 5px; 
+        }
+        .new-task .fa-trash-can{
+            color: #dc2626;
+            margin-left: 5px;
+            flex-shrink: 0;
+        }
+        .completed {
+            text-decoration: line-through;
+            color: #888;
+        }
+        @media (max-width: 600px){
+            body{
+                padding: 10px;
+            }
+
+            #main-container{
+                padding: 15px;
+                border-radius: 10px;
+            }
+            #hey{
+                font-size: large;
+            }
+            #pshow{
+                font-size: 1.1em;
+            }
+            #progres{
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 10px;
+                gap: 10px;
+            }
+            #circular-progress{
+                width: 50px;
+                height: 50px;
+            }
+            #circular-progress::before{
+                width: 40px;
+                height: 40px
+            }
+            #perentage{
+                font-size: 0.8em;
+            }
+            #add-new{
+                flex-direction: column;
+                gap: 10px;
+                padding: 10px;
+            }
+            #newTaskInput{
+                width: 100%;
+                margin-left: 0;
+            }
+            #addTaskBtn{
+                width: 100%;
+                margin-left: 0;
+                justify-content: center;
+            }
+            .new-task{
+                flex-wrap: wrap;
+                padding: 10px 12px;
+            }
+            .new-task sp{
+                width: 100%;
+                margin-bottom: 5px;
+                margin-right: 0;
+            }
+            .new-task .fa-check,
+            .new-task .fa-trash-can{
+                margin-left: 0;
+                margin-right: 5px;
+            }
+        }
+        @media (max-width: 400px){
+            #hey{
+                font-size: medium;
+            }
+            #pshow{
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+  <div id="main-container">
+    <section id="hey">Hey, Abel</section>
+    <section id="time"></section>
+    <section id="search">
+        <div id="search-input-wrapper">
+            <input type="text" id="serc" placeholder="search for your lists">
+            <i class="fas fa-search"></i>
+        </div>
+    </section>
+    <section id="progres">
+        <p id="pshow">Today's tasks</p>
+            <div id="circular-progress">
+                <div id="percentage">0%</div>
+            </div>
+    </section>
+
+
+    <section id="add-new">
+         <input type="text" id="newTaskInput" placeholder="type your new task">
+         <button id="addTaskBtn">
+            <i class="fa-solid fa-plus"></i> Add
+         </button>
+    </section>
+    
+
+    <section id="main"></section>
+
+    <script src="index.js"></script>
+  </div>
+</body>
+</html>
