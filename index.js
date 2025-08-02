@@ -10,8 +10,13 @@ document.addEventListener('DOMContentLoaded', () =>{
     const newTaskInput = document.getElementById('newTaskInput');
     const main = document.getElementById('main');
     const addTaskBtn = document.getElementById('addTaskBtn');
+    const usericon = document.getElementById('userIcon');
+    const namePopover = document.getElementById('namePopover');
+    const nameInput = document.getElementById('nameInput');
+    const saveBtn = document.getElementById('saveNameBtn');
 
     percentage.textContent = '0%';
+    hey.textContent = 'hey there!';
     newTaskInput.value = '';
 
     //function to update the percentage
@@ -32,6 +37,29 @@ document.addEventListener('DOMContentLoaded', () =>{
         const progress_angle = current_percentage * 3.6;
         circular_progress.style.background = `conic-gradient(rgb(94, 43, 94) ${progress_angle}deg, #502959 ${progress_angle}deg)`;
     }
+
+    //event listener for  the save button in the popover
+    saveBtn.addEventListener('click', () =>{
+        //get the value from the input field
+        const entered_name = nameInput.value.trim();
+        if(entered_name){
+            hey.textContent = `hey, ${entered_name}`;
+            namePopover.style.display = 'none';
+        }
+    });
+
+    //toggle popover visibility when the icon is clicked
+    usericon.addEventListener('click', (event) =>{
+        namePopover.style.display = namePopover.style.display === 'flex' ? 'none' : 'flex';
+        event.stopPropagation();//prevent click from bubbling up to document
+    });
+
+    //hide popover if clicked outside
+    document.addEventListener('click', (event) =>{
+        if(!namePopover.contains(event.target) && event.target !== usericon){
+            namePopover.style.display = 'none';
+        }
+    });
 
     addTaskBtn.addEventListener('click', () =>{
         //create a new element div for new task
@@ -82,6 +110,7 @@ document.addEventListener('DOMContentLoaded', () =>{
        main.appendChild(new_task_div);
 
        newTaskInput.value = '';
+       hey.value = '';
        update_progress();
     });
 
