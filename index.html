@@ -189,6 +189,18 @@
             max-width: 100%;
             word-break: break-word;
         }
+        #profile{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            position: relative;
+        }
+        #profile .fa-user{
+            font-size: 1.5em;
+            color: rgb(94, 43, 94);
+            cursor: pointer;
+        }
         .new-task span{
             flex-grow: 1;
             margin-right: 10px;
@@ -219,6 +231,40 @@
         .completed {
             text-decoration: line-through;
             color: #888;
+        }
+        .popover{
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 15px;
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            width: 200px;
+        }
+        .popover input[type = "text"]{
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+        .popover button{
+            background-color: rgb(94, 43, 94);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+        }
+        .popover button:hover{
+            background-color: rgb(70, 30, 70);
         }
         @media (max-width: 600px){
             body{
@@ -293,8 +339,17 @@
 </head>
 <body>
   <div id="main-container">
-    <section id="hey">Hey, Abel</section>
+    <div id = "profile">
+       <section id="hey"></section> 
+       <i class="fa-solid fa-user" id="userIcon"></i>
+       <div id="namePopover" class="popover">
+          <input type="text" id="nameInput" placeholder="enter your name">
+          <button id="saveNameBtn">save name</button>
+       </div>
+    </div>
+
     <section id="time"></section>
+    
     <section id="search">
         <div id="search-input-wrapper">
             <input type="text" id="serc" placeholder="search for your lists">
