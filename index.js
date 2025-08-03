@@ -19,6 +19,18 @@ document.addEventListener('DOMContentLoaded', () =>{
     hey.textContent = 'hey there!';
     newTaskInput.value = '';
 
+    //function to load the users name from the local storage
+    function loadusername(){
+        const saved_name = localStorage.getItem('username');
+        if (saved_name){
+            hey.textContent = `hey, ${saved_name}`;
+            nameInput.value = saved_name;
+        }else{
+            hey.textContent = 'hey there!'
+        }
+    }
+    loadusername();
+
     //function to update the percentage
     function update_progress(){
         const all_tasks = main.querySelectorAll('.new-task');
@@ -32,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () =>{
         if(total_tasks > 0){
             current_percentage = Math.round((tasks_done/total_tasks)*100);
         }
-        percentage.textContent = `${current_percentage}%`;
+        percentage.textContent = `${current_percentage}% complete`;
 
         const progress_angle = current_percentage * 3.6;
         circular_progress.style.background = `conic-gradient(rgb(94, 43, 94) ${progress_angle}deg, #502959 ${progress_angle}deg)`;
@@ -43,6 +55,7 @@ document.addEventListener('DOMContentLoaded', () =>{
         //get the value from the input field
         const entered_name = nameInput.value.trim();
         if(entered_name){
+            localStorage.setItem('username', entered_name)
             hey.textContent = `hey, ${entered_name}`;
             namePopover.style.display = 'none';
         }
