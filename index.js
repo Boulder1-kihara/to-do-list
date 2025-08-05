@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () =>{
     function update_progress(){
         const all_tasks = main.querySelectorAll('.new-task');
         //count elements with 'completed' class
-        const completed_tasks = main.querySelectorAll('.new-task .completed');
+        const completed_tasks = main.querySelectorAll('.new-task .done');
 
         const total_tasks = all_tasks.length;
         const tasks_done = completed_tasks.length;
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () =>{
         if(total_tasks > 0){
             current_percentage = Math.round((tasks_done/total_tasks)*100);
         }
-        percentage.textContent = `${current_percentage}% complete`;
+        percentage.textContent = `${current_percentage}%`;
 
         const progress_angle = current_percentage * 3.6;
         circular_progress.style.background = `conic-gradient(rgb(94, 43, 94) ${progress_angle}deg, #502959 ${progress_angle}deg)`;
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () =>{
 
         //add event listenertotask as complete
         check_icon.addEventListener('click', () =>{
-            task_text_span.classList.toggle('completed');
+            task_text_span.classList.toggle('done');
             update_progress();
         });
 
@@ -113,6 +113,7 @@ document.addEventListener('DOMContentLoaded', () =>{
         //add an event listener to the remove button
         remove_button.addEventListener('click', () =>{
             new_task_div.remove();
+            alert('do you want to delete this task');
             update_progress();
         });
 
