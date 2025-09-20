@@ -20,43 +20,99 @@ document.addEventListener('DOMContentLoaded', () => {
     newTaskInput.value = '';
 
     // Function to load the user's name from local storage
-    function loadusername() {
-        const saved_name = localStorage.getItem('username');
-        if (saved_name) {
-            hey.textContent = `hey, ${saved_name}`;
-            nameInput.value = saved_name;
+    function loadUsername() {
+        const savedName = localStorage.getItem('username');
+        if (savedName) {
+            hey.textContent = `hey, ${savedName}`;
+            nameInput.value = savedName;
         } else {
             hey.textContent = 'hey there!';
         }
     }
-    loadusername();
+    loadUsername();
 
-    // Function to update the percentage
-    function update_progress() {
-        const all_tasks = main.querySelectorAll('.new-task');
-        // Count elements with 'completed' class
-        const completed_tasks = main.querySelectorAll('.new-task .completed');
+    // Function to update the progress
+    function updateProgress() {
+        const allTasks = main.querySelectorAll('.new-task');
+        const completedTasks = main.querySelectorAll('.new-task .completed');
 
-        const total_tasks = all_tasks.length;
-        const tasks_done = completed_tasks.length;
+        const totalTasks = allTasks.length;
+        const tasksDone = completedTasks.length;
 
-        let current_percentage = 0;
-        if (total_tasks > 0) {
-            current_percentage = Math.round((tasks_done / total_tasks) * 100);
+        let currentPercentage = 0;
+        if (totalTasks > 0) {
+            currentPercentage = Math.round((tasksDone / totalTasks) * 100);
         }
-        percentage.textContent = `${current_percentage}%`;
+        percentage.textContent = `${currentPercentage}%`;
 
-        const progress_angle = current_percentage * 3.6;
-        circular_progress.style.background = `conic-gradient(rgb(94, 43, 94) ${progress_angle}deg, #502959 ${progress_angle}deg)`;
+        const progressAngle = currentPercentage * 3.6;
+        circular_progress.style.background = `conic-gradient(rgb(94, 43, 94) ${progressAngle}deg, #502959 ${progressAngle}deg)`;
     }
+
+    // Function to save tasks to localStorage
+    function saveTasks() {
+        const tasks = [];
+        main.querySelectorAll('.new-task').forEach(task => {
+            const taskText = task.querySelector('span').textContent;
+            const isCompleted = task.querySelector('span').classList.contains('completed');
+            tasks.push({ text: taskText, completed: isCompleted });
+        });
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
+    // Function to load tasks from localStorage
+    function loadTasks() {
+        const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        tasks.forEach(task => {
+            const newTaskDiv = document.createElement('div');
+            newTaskDiv.classList.add('new-task');
+
+            const taskTextSpan = document.createElement('span');
+            taskTextSpan.textContent = task.text;
+            if (task.completed) {
+                taskTextSpan.classList.add('completed');
+            }
+
+            const checkIcon = document.createElement('i');
+            checkIcon.classList.add('fa-solid', 'fa-circle-check');
+            checkIcon.setAttribute('aria-hidden', 'true');
+            checkIcon.style.color = 'lime';
+
+            checkIcon.addEventListener('click', () => {
+                taskTextSpan.classList.toggle('completed');
+                updateProgress();
+                saveTasks(); // Save tasks after toggling completion
+            });
+
+            const removeButton = document.createElement('i');
+            removeButton.classList.add('fa-solid', 'fa-trash-can');
+            removeButton.setAttribute('aria-hidden', 'true');
+
+            removeButton.addEventListener('click', () => {
+                if (confirm('Do you want to delete this task?')) { // Improved delete confirmation
+                    newTaskDiv.remove();
+                    updateProgress();
+                    saveTasks(); // Save tasks after deletion
+                }
+            });
+
+            newTaskDiv.appendChild(taskTextSpan);
+            newTaskDiv.appendChild(checkIcon);
+            newTaskDiv.appendChild(removeButton);
+            main.appendChild(newTaskDiv);
+        });
+        updateProgress(); // Update progress after loading tasks
+    }
+
+    // Load tasks when the page loads
+    loadTasks();
 
     // Event listener for the save button in the popover
     saveBtn.addEventListener('click', () => {
-        // Get the value from the input field
-        const entered_name = nameInput.value.trim();
-        if (entered_name) {
-            localStorage.setItem('username', entered_name);
-            hey.textContent = `hey, ${entered_name}`;
+        const enteredName = nameInput.value.trim();
+        if (enteredName) {
+            localStorage.setItem('username', enteredName);
+            hey.textContent = `hey, ${enteredName}`;
             namePopover.style.display = 'none';
         }
     });
@@ -64,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Toggle popover visibility when the icon is clicked
     usericon.addEventListener('click', (event) => {
         namePopover.style.display = namePopover.style.display === 'flex' ? 'none' : 'flex';
-        event.stopPropagation(); // Prevent click from bubbling up to document
+        event.stopPropagation();
     });
 
     // Hide popover if clicked outside
@@ -74,75 +130,62 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Add task event listener
     addTaskBtn.addEventListener('click', () => {
-        // Create a new element div for new task
-        const new_task_value = newTaskInput.value.trim();
+        const newTaskValue = newTaskInput.value.trim();
 
-        if (new_task_value === '') {
-            alert('please enter a task!');
+        if (newTaskValue === '') {
+            alert('Please enter a task!');
             return;
         }
 
-        const new_task_div = document.createElement('div');
+        const newTaskDiv = document.createElement('div');
+        newTaskDiv.classList.add('new-task');
 
-        // Add the new item class for styling
-        new_task_div.classList.add('new-task');
+        const taskTextSpan = document.createElement('span');
+        taskTextSpan.textContent = newTaskValue;
 
-        // Create a span element for the item's text content
-        const task_text_span = document.createElement('span');
-        task_text_span.textContent = new_task_value;
+        const checkIcon = document.createElement('i');
+        checkIcon.classList.add('fa-solid', 'fa-circle-check');
+        checkIcon.setAttribute('aria-hidden', 'true');
+        checkIcon.style.color = 'lime';
 
-        // Create the check icon element
-        const check_icon = document.createElement('i');
-        check_icon.classList.add('fa-solid', 'fa-circle-check');
-        check_icon.setAttribute('aria-hidden', 'true');
-        check_icon.style.color = 'lime';
-
-        // Add event listener to mark task as complete
-        check_icon.addEventListener('click', () => {
-            task_text_span.classList.toggle('completed'); // Use 'completed' to match CSS
-            update_progress();
+        checkIcon.addEventListener('click', () => {
+            taskTextSpan.classList.toggle('completed');
+            updateProgress();
+            saveTasks(); // Save tasks after toggling completion
         });
 
-        // Create an <i> element for removing the item
-        const remove_button = document.createElement('i');
-        remove_button.classList.add('fa-solid', 'fa-trash-can');
-        remove_button.setAttribute('aria-hidden', 'true');
+        const removeButton = document.createElement('i');
+        removeButton.classList.add('fa-solid', 'fa-trash-can');
+        removeButton.setAttribute('aria-hidden', 'true');
 
-        // Add an event listener to the remove button
-        remove_button.addEventListener('click', () => {
-            new_task_div.remove();
-            alert('do you want to delete this task');
-            update_progress();
+        removeButton.addEventListener('click', () => {
+            if (confirm('Do you want to delete this task?')) { // Improved delete confirmation
+                newTaskDiv.remove();
+                updateProgress();
+                saveTasks(); // Save tasks after deletion
+            }
         });
 
-        new_task_div.appendChild(task_text_span);
-        new_task_div.appendChild(check_icon);
-        new_task_div.appendChild(remove_button);
-
-        main.appendChild(new_task_div);
+        newTaskDiv.appendChild(taskTextSpan);
+        newTaskDiv.appendChild(checkIcon);
+        newTaskDiv.appendChild(removeButton);
+        main.appendChild(newTaskDiv);
 
         newTaskInput.value = '';
-        update_progress();
+        updateProgress();
+        saveTasks(); // Save tasks after adding a new task
     });
 
-    // SEARCH OPTION
+    // Search option
     serc.addEventListener('input', () => {
-        // Get the search term and convert to lower case
-        const searcterm = serc.value.toLowerCase();
-        // Get all task elements
+        const searchTerm = serc.value.toLowerCase();
         const tasks = main.querySelectorAll('.new-task');
 
         tasks.forEach(task => {
-            const tasktext = task.querySelector('span').textContent.toLowerCase();
-
-            if (tasktext.includes(searcterm)) {
-                // Show the task if it matches
-                task.style.display = 'flex';
-            } else {
-                // Hide task if it doesn't match
-                task.style.display = 'none';
-            }
+            const taskText = task.querySelector('span').textContent.toLowerCase();
+            task.style.display = taskText.includes(searchTerm) ? 'flex' : 'none';
         });
     });
 });
